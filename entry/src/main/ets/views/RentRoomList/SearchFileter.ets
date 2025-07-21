@@ -13,6 +13,7 @@ import { rvp } from '../../utils/responsive'
 
 @Component
 export default struct SearchFilter {
+  isShowSearchArea: boolean = false
   @State searchTypeList: string[] = ['地区', '租金', '付款方式', '排序']
   @State currentSearchType: string = ''
   @State provinceList: IProvinceList = [] // 省
@@ -21,6 +22,10 @@ export default struct SearchFilter {
   @State provinceCode: string = '' // 省code
   @State cityCode: string = '' // 市code
   @State districtCode: string = '' // 区code
+  @State submitDistrictName: string = '' //查看房源时更新数据
+  @State submitProvinceCode: string = ''
+  @State submitCityCode: string = ''
+  @State submitDistrictCode: string = ''
 
   chooseSearchType(searchType: string) {
     console.log(searchType)
@@ -59,8 +64,27 @@ export default struct SearchFilter {
     this.districtCode = '';
     this.getCityList()
   }
+  // 隐藏面板
   hidden = () => {
+    this.isShowSearchArea = false;
     this.currentSearchType = '';
+  }
+  //处理搜索文本的变化
+  handleSearchTextChange() {
+    if(this.currentSearchType === '地区') {
+        this.provinceCode = this.submitProvinceCode
+        this.cityCode = this.submitCityCode
+        this.districtCode = this.submitDistrictCode
+        this.getDistrictList()
+    }
+  }
+//查看房源
+  submitPostion = () => {
+    this.hidden()
+    this.submitDistrictName = this.districtList.find(district => district.code === this.districtCode)!.name
+    this.submitProvinceCode = this.provinceCode
+    this.submitCityCode = this.cityCode
+    this.submitDistrictCode = this.districtCode
   }
 
   @Builder
@@ -138,7 +162,7 @@ export default struct SearchFilter {
       Button('重置')
         .buttonStyles(rvp(95), '#F0F0F0', $r('app.color.gray_second')).onClick(this.resetLocation)
       Button('查看房源')
-        .buttonStyles(rvp(211), '#67C0A8', $r('app.color.white'))
+        .buttonStyles(rvp(211), '#67C0A8', $r('app.color.white')).onClick(this.submitPostion)
     }.height(rvp(58)).width('100%').backgroundColor($r('app.color.white')).justifyContent(FlexAlign.Center)
 
     Row() {
@@ -160,18 +184,35 @@ export default struct SearchFilter {
     Text('SortRender')
   }
 
+  getSearchText=(text:string)=>{
+    if (text === '地区') {
+      return this.submitDistrictName||text
+    }else {
+      return text
+    }
+  }
+
+  getSearchTextColor=(text:string)=>{
+    if (text === '地区') {
+      return this.submitDistrictName ? $r('app.color.primary'):'#333333'
+    }else {
+      return text
+    }
+  }
+
   build() {
+    // 搜索类型列表
     Column() {
       Row() {
         ForEach(this.searchTypeList, (item: string) => {
           Row({ space: rvp(6) }) {
-            Text(item)
+            Text(this.getSearchText(item))//更新搜索地区
               .fontSize(rvp(12))
-              .fontColor(this.currentSearchType === item ? '#67C0A8' : $r('app.color.black'))
+              .fontColor(this.getSearchTextColor(item))
               .maxLines(1)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
               .constraintSize({
-                maxWidth: rvp(60),
+                maxWidth: rvp(60),//限制最大宽度
               })
 
             if (this.currentSearchType === item) {
