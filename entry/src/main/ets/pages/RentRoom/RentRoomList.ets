@@ -2,7 +2,7 @@ import { getWindowTopHeight, rvp } from '../../utils/responsive'
 
 import NavBar from '../../components/Navbar'
 import SearchFilter from '../../views/RentRoomList/SearchFileter'
-import WaterfallFlow from '../../views/RentRoomList/WaterfallFlow'
+import WaterfallFlow from '../../views/RentRoomList/RoomList'
 
 @Entry
 @Component

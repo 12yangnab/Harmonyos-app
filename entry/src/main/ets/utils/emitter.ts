@@ -53,6 +53,5 @@ class Emitter {
   }
 }
 
-export default Emitter;
-
 export const globalEmitter = new Emitter();
+export default Emitter;

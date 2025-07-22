@@ -40,21 +40,21 @@ export default struct SearchFilter {
   async getProvinceList() {
     const provinceList = await getProvinceListApi()
     this.provinceList = provinceList
-    this.provinceCode = this.provinceCode || provinceList[0].code;
+    this.provinceCode = this.provinceCode || this.provinceList[0].code;
     this.getCityList()
   }
 
   async getCityList() {
     const cityList = await getCityListApi(this.provinceCode)
     this.cityList = cityList;
-    this.cityCode = this.cityCode || cityList[0].code;
+    this.cityCode = this.cityCode || this.cityList[0].code;
     this.getDistrictList()
   }
 
   async getDistrictList() {
     const districtList = await getDistrictListApi(this.cityCode)
     this.districtList = districtList
-    this.districtCode = this.districtCode || districtList[0].code;
+    this.districtCode = this.districtCode || this.districtList[0].code;
   }
 
   // 重置地区

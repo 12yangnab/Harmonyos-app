@@ -7,7 +7,7 @@ import { rvp } from '../../utils/responsive';
 import { globalEmitter } from '../../utils/emitter';
 
 @Component
-export default struct WaterfallFlow {
+export default struct RentRoomList {
   @State roomRoomListDataSource: RentRoomListDataSource = new RentRoomListDataSource([])
   @State total: number = 0
   @State searchOptions: IGetRentRoomListParams = {

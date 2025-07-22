@@ -8,7 +8,6 @@ const request = axios.create({
 
 request.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-
     return config;
   }
 )
