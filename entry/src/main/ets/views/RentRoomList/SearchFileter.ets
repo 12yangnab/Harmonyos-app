@@ -5,9 +5,11 @@ import {
   ICityList,
   IDistrictItem,
   IDistrictList,
+  IGetRentRoomListParams,
   IProvinceItem,
   IProvinceList
 } from '../../model/RentRoomData'
+import { globalEmitter } from '../../utils/emitter'
 import { rvp } from '../../utils/responsive'
 
 
@@ -85,6 +87,14 @@ export default struct SearchFilter {
     this.submitProvinceCode = this.provinceCode
     this.submitCityCode = this.cityCode
     this.submitDistrictCode = this.districtCode
+    //搜索房源列表（待完成）
+    const searchOptions : Partial<IGetRentRoomListParams>={
+      provinceCode: this.provinceCode,
+      cityCode: this.cityCode,
+      districtCode: this.districtCode,
+    }
+    globalEmitter.emit('searchOptionsChange', searchOptions)//搜索房源列表（待完成
+    this.handleSearchTextChange()
   }
 
   @Builder
@@ -212,7 +222,7 @@ export default struct SearchFilter {
               .maxLines(1)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
               .constraintSize({
-                maxWidth: rvp(60),//限制最大宽度
+                maxWidth: rvp(60),//限制字符最大宽度
               })
 
             if (this.currentSearchType === item) {
@@ -222,9 +232,8 @@ export default struct SearchFilter {
               Image($r('app.media.arrow_down_3'))
                 .width(rvp(6)).height(rvp(3)).objectFit(ImageFit.Fill)
             }
-          }.width('25%').height('100%').justifyContent(FlexAlign.Center).onClick(() => {
-            this.chooseSearchType(item)
-          })
+          }.width('25%').height('100%').justifyContent(FlexAlign.Center)
+          .onClick(() => {this.chooseSearchType(item)})
         }, (item: string) => item)
       }.width('100%').height(rvp(44)).justifyContent(FlexAlign.SpaceBetween)
 

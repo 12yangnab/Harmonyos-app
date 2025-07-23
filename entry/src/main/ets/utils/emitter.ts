@@ -4,11 +4,10 @@ class Emitter {
   private callbacks = {}
 
   on(eventName: string, cb: ICallback) {
-    if (this.callbacks[eventName]) {
-      this.callbacks[eventName].push(cb)
-    } else {
-      this.callbacks[eventName] = [cb]
+    if (!this.callbacks[eventName]) {
+      this.callbacks[eventName] = []
     }
+    this.callbacks[eventName].push(cb)
   }
 
   once(eventName: string, cb: ICallback) {
@@ -20,10 +19,10 @@ class Emitter {
   }
 
   emit(eventName: string, ...args: any[]) {
+    // 修复：事件不存在时不抛出错误，而是静默处理
     if (!this.callbacks[eventName]) {
-      // 事件不存在
-      throw new Error(`${eventName}自定义事件不存在~`)
-      return
+      console.warn(`Event "${eventName}" is not registered.`);
+      return;
     }
 
     this.callbacks[eventName].forEach(cb => cb(...args))
@@ -31,27 +30,24 @@ class Emitter {
 
   off(eventName?: string, cb?: ICallback) {
     if (!eventName) {
-      // 解绑所有事件
       this.callbacks = {};
       return;
     }
 
     if (!this.callbacks[eventName]) {
-      // 事件不存在
-      throw new Error(`${eventName}自定义事件不存在~`)
-      return
+      console.warn(`Event "${eventName}" is not registered.`);
+      return;
     }
 
     if (!cb) {
-      // 解绑单个事件的所有回调函数
       delete this.callbacks[eventName]
       return;
     }
 
-    // 解绑单个事件的单个回调
     this.callbacks[eventName] = this.callbacks[eventName].filter(callback => cb !== callback)
   }
 }
 
-export const globalEmitter = new Emitter();
 export default Emitter;
+
+export const globalEmitter = new Emitter();

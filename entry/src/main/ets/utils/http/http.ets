@@ -1,8 +1,8 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from '@ohos/axios';
 
 const request = axios.create({
-   baseURL: 'http://192.168.31.57:6060', // 通过 ipconfig 查询当前电脑的 ip，使用自己电脑的 ip 地址/4#408
-  //baseURL: 'http://10.106.0.26:6060', // 通过 ipconfig 查询当前电脑的 ip，使用自己电脑的 ip 地址 /4#110jk1102
+   //baseURL: 'http://192.168.31.57:6060', // 通过 ipconfig 查询当前电脑的 ip，使用自己电脑的 ip 地址/4#408
+  baseURL: 'http://10.106.2.221:6060', // 通过 ipconfig 查询当前电脑的 ip，使用自己电脑的 ip 地址 /4#110jk1102
   timeout: 20000,
 })
 

@@ -7,9 +7,10 @@ import { rvp } from '../../utils/responsive';
 import { globalEmitter } from '../../utils/emitter';
 
 @Component
-export default struct RentRoomList {
+export default struct RoomList {
   @State roomRoomListDataSource: RentRoomListDataSource = new RentRoomListDataSource([])
   @State total: number = 0
+  @State isEnd: boolean = false
   @State searchOptions: IGetRentRoomListParams = {
     "page": 1,
     "limit": 10,
@@ -30,18 +31,27 @@ export default struct RentRoomList {
 
   registerGlobalEmitter() {
     globalEmitter.on('searchOptionsChange', async (searchOptions: Partial<IGetRentRoomListParams>) => {
-      this.searchOptions.page = 1;
-      this.searchOptions.limit = 10;
-      if (searchOptions.provinceCode) {
-        this.searchOptions.provinceCode = searchOptions.provinceCode;
-      }
-      if (searchOptions.cityCode) {
-        this.searchOptions.cityCode = searchOptions.cityCode;
-      }
-      if (searchOptions.districtCode) {
-        this.searchOptions.districtCode = searchOptions.districtCode;
-      }
-      this.getRentRoomList()
+      console.log('收到搜索参数:', JSON.stringify(searchOptions));
+      // this.searchOptions.page = 1;
+      // this.searchOptions.limit = 10;
+      // if (searchOptions.provinceCode) {
+      //   this.searchOptions.provinceCode = searchOptions.provinceCode;
+      // }
+      // if (searchOptions.cityCode) {
+      //   this.searchOptions.cityCode = searchOptions.cityCode;
+      // }
+      // if (searchOptions.districtCode) {
+      //   this.searchOptions.districtCode = searchOptions.districtCode;
+      // }
+      // await this.getRentRoomList();
+      const keys = Object.keys(searchOptions)
+      keys.forEach(key => {
+        const val:string=Reflect.get(this.searchOptions, key)
+        Reflect.set(this.searchOptions, key,val)
+      })
+      this.searchOptions.page = 1;//重置页码
+      // this.searchOptions.limit = 10;//
+      await this.getRentRoomList();
     })
   }
 
