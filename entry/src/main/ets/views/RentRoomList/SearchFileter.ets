@@ -61,10 +61,10 @@ export default struct SearchFilter {
 
   // 重置地区
   resetLocation = () => {
-    this.provinceCode = this.provinceList[0].code;
-    this.cityCode = '';
-    this.districtCode = '';
-    this.getCityList()
+    this.provinceCode = this.provinceList[0]?.code ?? '';
+    this.cityCode = this.cityList[0]?.code ?? '';   // 直接重置到第一项
+    this.districtCode = this.districtList[0]?.code ?? '';
+    this.getCityList();   // 刷新下一级
   }
   // 隐藏面板
   hidden = () => {

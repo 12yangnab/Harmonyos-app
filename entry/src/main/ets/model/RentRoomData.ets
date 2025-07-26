@@ -116,6 +116,12 @@ export class RentRoomListDataSource implements IDataSource {
       listener.onDataDelete(index);
     })
   }
+
+  // 清空所有数据
+  clear(): void {
+    this.data = [];
+    this.notifyDataReload();
+  }
 }
 
 export interface IProvinceItem {

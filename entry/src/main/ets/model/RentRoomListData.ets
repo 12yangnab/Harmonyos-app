@@ -47,6 +47,11 @@ export class RentRoomListDataSource implements IDataSource {
   private listeners: DataChangeListener[] = [];
   data: IRentRoomList = [];
 
+  public clear(): void {
+    this.data = [];
+    this.notifyDataReload();
+  }
+
   constructor(list: IRentRoomList) {
     this.data = list;
   }
@@ -121,3 +126,4 @@ export class RentRoomListDataSource implements IDataSource {
     })
   }
 }
+

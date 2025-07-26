@@ -28,43 +28,68 @@ export default struct RoomList {
     this.getRentRoomList();
     this.registerGlobalEmitter();
   }
-
   registerGlobalEmitter() {
     globalEmitter.on('searchOptionsChange', async (searchOptions: Partial<IGetRentRoomListParams>) => {
-      console.log('收到搜索参数:', JSON.stringify(searchOptions));
-      // this.searchOptions.page = 1;
-      // this.searchOptions.limit = 10;
-      // if (searchOptions.provinceCode) {
-      //   this.searchOptions.provinceCode = searchOptions.provinceCode;
-      // }
-      // if (searchOptions.cityCode) {
-      //   this.searchOptions.cityCode = searchOptions.cityCode;
-      // }
-      // if (searchOptions.districtCode) {
-      //   this.searchOptions.districtCode = searchOptions.districtCode;
-      // }
-      // await this.getRentRoomList();
-      const keys = Object.keys(searchOptions)
-      keys.forEach(key => {
-        const val:string=Reflect.get(this.searchOptions, key)
-        Reflect.set(this.searchOptions, key,val)
-      })
-      this.searchOptions.page = 1;//重置页码
-      // this.searchOptions.limit = 10;//
-      await this.getRentRoomList();
-    })
+      // 逐个字段安全合并，不使用解构、any、Object.assign
+      if (searchOptions.provinceCode !== undefined) this.searchOptions.provinceCode = searchOptions.provinceCode;
+      if (searchOptions.cityCode     !== undefined) this.searchOptions.cityCode     = searchOptions.cityCode;
+      if (searchOptions.districtCode !== undefined) this.searchOptions.districtCode = searchOptions.districtCode;
+      if (searchOptions.minRent      !== undefined) this.searchOptions.minRent      = searchOptions.minRent;
+      if (searchOptions.maxRent      !== undefined) this.searchOptions.maxRent      = searchOptions.maxRent;
+      if (searchOptions.paymentType  !== undefined) this.searchOptions.paymentType  = searchOptions.paymentType;
+      if (searchOptions.orderBy      !== undefined) this.searchOptions.orderBy      = searchOptions.orderBy;
+      if (searchOptions.orderType    !== undefined) this.searchOptions.orderType    = searchOptions.orderType;
+
+      this.searchOptions.page  = 1;
+      this.searchOptions.limit = 10;
+
+      await this.getRentRoomList(false);   // 重新搜索
+    });
   }
 
-  async getRentRoomList() {
-    const res = await getRentRoomListApi(this.searchOptions)
-    this.roomRoomListDataSource.pushDataList(res.records)
-    this.total = res.total
+  // registerGlobalEmitter() {
+  //   globalEmitter.on('searchOptionsChange', async (searchOptions: Partial<IGetRentRoomListParams>) => {
+  //     console.log('收到搜索参数:', JSON.stringify(searchOptions));
+  //     // this.searchOptions.page = 1;
+  //     // this.searchOptions.limit = 10;
+  //     // if (searchOptions.provinceCode) {
+  //     //   this.searchOptions.provinceCode = searchOptions.provinceCode;
+  //     // }
+  //     // if (searchOptions.cityCode) {
+  //     //   this.searchOptions.cityCode = searchOptions.cityCode;
+  //     // }
+  //     // if (searchOptions.districtCode) {
+  //     //   this.searchOptions.districtCode = searchOptions.districtCode;
+  //     // }
+  //     // await this.getRentRoomList();
+  //     const keys = Object.keys(searchOptions)
+  //     keys.forEach(key => {
+  //       const val:string=Reflect.get(this.searchOptions, key)
+  //       Reflect.set(this.searchOptions, key,val)
+  //     })
+  //     this.searchOptions.page = 1;//重置页码
+  //     this.searchOptions.limit = 10;//重置每页数量
+  //     await this.getRentRoomList(false);
+  //   })
+  // }
+
+  async getRentRoomList(isLoadMore = false) {
+    if (!isLoadMore) {
+      // 新条件搜索：重置页码 & 清空旧数据
+      this.searchOptions.page = 1;
+      this.roomRoomListDataSource.clear();
+    }
+
+    const res = await getRentRoomListApi(this.searchOptions);
+    this.roomRoomListDataSource.pushDataList(res.records);
+    this.total = res.total;
+    this.isEnd = res.records.length < this.searchOptions.limit;
   }
 
   loadMore = () => {
-    console.log(1111 + '')
+    if (this.isEnd) return;
     this.searchOptions.page++;
-    this.getRentRoomList()
+    this.getRentRoomList(true);   // true = 加载更多
   }
 
   @Builder
