@@ -1,6 +1,8 @@
 {
   "src": [
     "pages/Index",
-    "pages/RentRoom/RentRoomList"
+    "pages/RentRoom/RentRoomList",
+    "pages/Login/LoginPhone",
+    "pages/Login/LoginCode"
   ]
 }

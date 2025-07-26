@@ -1,5 +1,7 @@
 import mediaQuery from '@ohos.mediaquery'
-
+// responsiveFontSize.ets
+export const lg = () => 16;   // 或你想要的默认值
+export const sm = () => 12;
 class Breakpoint {
   name: string = '';
   size: number = 0;
