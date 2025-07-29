@@ -127,3 +127,12 @@ export class RentRoomListDataSource implements IDataSource {
   }
 }
 
+export interface RentPriceItem {
+  id: number;
+  minRent: string;
+  maxRent: string;
+  text: string;
+}
+
+export type RentPriceList = RentPriceItem[]
+
