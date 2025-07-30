@@ -136,3 +136,10 @@ export interface RentPriceItem {
 
 export type RentPriceList = RentPriceItem[]
 
+export interface  ISortItem{
+  icon:Resource
+  text:string
+  orderType:string
+  orderBy:string
+}
+export type SortList = ISortItem[]

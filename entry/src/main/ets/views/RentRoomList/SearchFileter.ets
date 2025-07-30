@@ -7,9 +7,13 @@ import {
   IDistrictList,
   IGetRentRoomListParams,
   IProvinceItem,
-  IProvinceList
+  IProvinceList,
+  IRentPriceItem,
+  IRentPriceList,
+  ISortItem,
+  ISortList,
 } from '../../model/RentRoomData'
-import { RentPriceItem, RentPriceList } from '../../model/RentRoomListData'
+// import { RentPriceItem, RentPriceList } from '../../model/RentRoomListData'
 import { globalEmitter } from '../../utils/emitter'
 import { rvp } from '../../utils/responsive'
 
@@ -32,7 +36,7 @@ export default struct SearchFilter {
   @State paymentWayList :string[]= ['月付', '季付', '半年付', '年付']
   @State paymentWay : string = ''
   //租金列表
-  @State rentPriceList: RentPriceList=[
+  @State rentPriceList: IRentPriceList=[
     {
       id: 1,
       minRent: '0',
@@ -266,7 +270,7 @@ export default struct SearchFilter {
   @Builder
   RentPriceRender() {
     Grid(){
-      ForEach(this.rentPriceList, (rentPrice: RentPriceItem) => {
+      ForEach(this.rentPriceList, (rentPrice: IRentPriceItem) => {
         GridItem(){
           Text(rentPrice.text)
             .textExtends(this.rentText===rentPrice.text,95)
@@ -274,7 +278,7 @@ export default struct SearchFilter {
               this.rentText = rentPrice.text
             })
         }
-      }, (rentPrice: RentPriceItem) => rentPrice.id+'')
+      }, (rentPrice: IRentPriceItem) => rentPrice.id+'')
     }.width("100%")
     .padding(rvp(PADDING))
     .columnsTemplate('1fr 1fr 1fr')
@@ -332,11 +336,57 @@ export default struct SearchFilter {
       .backgroundColor('rgba(0, 0, 0, 0.7)')
       .onClick(this.hidden)
   }
+//排序列表
+@State sortList :ISortList=[
+  {
+    icon:$r('app.media.sort'),
+    text:'综合排序',
+    orderBy:'',
+    orderType:''
+  },
+  { icon:$r('app.media.rent'),
+  text:'价格从底到高',
+  orderBy:'price',
+  orderType:'asc'
+},
+  {icon:$r('app.media.rent'),
+text:'价格从高到底',
+orderBy:'price',
+orderType:'desc'
+},
+  {icon:$r('app.media.area'),
+text:'面积从大到小',
+orderBy:'area',
+orderType:'desc'
+},
+  {icon:$r('app.media.rent'),
+text:'面积从小到大',
+orderBy:'area',
+orderType:'asc'
+},
+]
 
-
+@State sortText:string=''
+//选择排序方式
   @Builder
   SortRender() {
-    Text('排序')
+    Column(){
+      ForEach(this.sortList,(sort:ISortItem)=>{
+        Row({space:rvp(8)}){
+          Image(sort.icon).width(rvp(16)).height(rvp(16))
+          Text(sort.text).fontSize(rvp(12)).fontColor(this.sortText===sort.text ? '#67C0A8':$r('app.color.gray_second'))
+        }.height(rvp(34)).onClick(()=>{
+         this.sortText=sort.text
+          const searchOptions : Partial<IGetRentRoomListParams>={
+            orderBy:sort.orderBy,
+            orderType:sort.orderType
+          }
+          globalEmitter.emit('searchOptionsChange',searchOptions)
+          this.hidden()
+
+        })
+      },(sort:ISortItem)=>sort.text)
+    }.width('100%').alignItems(HorizontalAlign.Start).padding({left:rvp(32),bottom:rvp(16)})
   }
 //选择搜索类型
   getSearchText=(text:string)=>{
@@ -348,7 +398,7 @@ export default struct SearchFilter {
       return this.submitRentPriceText||text
     }
     else {
-      return text
+      return this.sortText||text
     }
   }
 //选择高亮
@@ -361,7 +411,7 @@ export default struct SearchFilter {
       return this.submitRentPriceText ? $r('app.color.primary'):'#333333'
     }
     else {
-      return text
+      return this.sortText ? $r('app.color.primary'):'#333333'
     }
   }
 

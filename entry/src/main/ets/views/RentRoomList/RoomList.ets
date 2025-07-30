@@ -5,6 +5,7 @@ import { ITagItem } from '../../model/RoomRecommendDataSource';
 import { BORDER_RADIUS } from '../../constans/size';
 import { rvp } from '../../utils/responsive';
 import { globalEmitter } from '../../utils/emitter';
+import router from '@ohos.router';
 
 @Component
 export default struct RoomList {
@@ -189,6 +190,13 @@ export default struct RoomList {
           .height('100%')
           .width(rvp(165))
         }.height(room.activity ? rvp(320) : rvp(210))
+        //点击进入房子详情页面，懒得搭建了写个简易版的能过就行
+        .onClick(() => {
+          router.pushUrl({url:'pages/RentRoom/RentRoomDetail',
+            params: {
+              id: room.id
+            }})
+        })
       }, (room: IRentRoomItem) => room.id)
     }
     .columnsTemplate("1fr 1fr")

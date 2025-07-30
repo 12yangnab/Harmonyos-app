@@ -84,7 +84,7 @@ struct LoginPhone {
       NavBar({ title: '验证码登录' })
       this.LoginPhoneForm()
     }
-    .width('100%').height('100%').linearGradient({
+    .width('100%').height('100%').linearGradient({//渐变北京
       angle: 180,
       colors: [
         ['#DEFBE5', 0],

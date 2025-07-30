@@ -167,11 +167,10 @@ export interface IRentPriceItem {
 export type IRentPriceList = IRentPriceItem[]
 // ...
 export interface ISortItem {
-  id: number;
   icon: Resource;
   text: string;
-  orderBy: IOrderBy;
-  orderType: IOrderType;
+  orderBy: string;
+  orderType: string;
 }
 
 export type ISortList = ISortItem[]
