@@ -6,7 +6,7 @@ import { lg, sm } from '../../utils/responsiveFontSize'
 import { sendSMSCodeApi, loginApi } from '../../api/login'
 import showToast from '../../utils/showToast'
 import { CODE_REG } from '../../constans/regs'
-
+import promptAction from '@ohos.promptAction'
 @Entry
 @Component
 struct LoginCode {
@@ -27,7 +27,11 @@ struct LoginCode {
     this.startCountDown()
     this.isSendCode = true
     const code = await sendSMSCodeApi(this.phone)
-    showToast(code)
+    // 替换原来的 showToast(code)
+    promptAction.showToast({
+      message: `验证码：${code}`,
+      duration: 5000// 持续时间，单位为毫秒
+    })
   }
 
   // 倒计时
