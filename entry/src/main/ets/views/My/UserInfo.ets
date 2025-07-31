@@ -46,7 +46,6 @@ getUserInfo = async()=>{
                 // 1. 清空本地缓存
                 AppStorage.SetOrCreate('token', '');
                 AppStorage.SetOrCreate('user', { id: 0, nickname: '', avatar: '' });
-
                 // 2. 跳转到登录页
                 router.replaceUrl({ url: 'pages//My' });
               })
