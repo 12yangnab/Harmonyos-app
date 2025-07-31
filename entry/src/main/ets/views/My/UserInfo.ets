@@ -36,7 +36,21 @@ getUserInfo = async()=>{
           Column({ space: rvp(4) }) {
             Text(this.user.nickname).fontSize(18).fontColor($r('app.color.white')).fontWeight(700)
             Text('米粒点15').fontSize(14).fontColor($r('app.color.white'))
+
           }.alignItems(HorizontalAlign.Start)
+          Row() {
+            Button('退出登录')
+              .fontSize(14)
+              .fontColor($r('app.color.white'))
+              .onClick(() => {
+                // 1. 清空本地缓存
+                AppStorage.SetOrCreate('token', '');
+                AppStorage.SetOrCreate('user', { id: 0, nickname: '', avatar: '' });
+
+                // 2. 跳转到登录页
+                router.replaceUrl({ url: 'pages//My' });
+              })
+          }
         }else {
           Text('请登录').fontSize(18).fontColor($r('app.color.white')).fontWeight(700)
         }
