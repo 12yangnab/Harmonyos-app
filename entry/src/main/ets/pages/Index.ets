@@ -5,7 +5,8 @@ import Discover from './Discover';
 import My from './My';
 
 import { getWindowBottomHeight, rvp } from '../utils/responsive';
-
+// 持久化存储
+PersistentStorage.PersistProp('token','')
 @Entry
 @Component
 struct Index {

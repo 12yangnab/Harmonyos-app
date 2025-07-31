@@ -3,7 +3,7 @@ import NavBar from '../../components/Navbar'
 
 import {rvp} from '../../utils/responsive'
 import { lg, sm } from '../../utils/responsiveFontSize'
-import { sendSMSCodeApi, loginApi } from '../../api/login'
+import { sendSMSCodeApi, loginApi, getUserInfoApi } from '../../api/login'
 import showToast from '../../utils/showToast'
 import { CODE_REG } from '../../constans/regs'
 import promptAction from '@ohos.promptAction'
@@ -70,7 +70,9 @@ struct LoginCode {
         return
       }
       this.token = res.token
-      router.pushUrl({ url: 'pages/Index', params: { currentIndex: 4 } })
+      const userData=await getUserInfoApi()//获取用户信息
+      AppStorage.SetOrCreate('user',userData)
+      router.back({ url: 'pages/Index', params: { currentIndex: 4 } })
     } catch {
       showToast('验证码不正确')
     }

@@ -12,16 +12,22 @@ import PlanList from '../views/My/PlanList'
 
 @Component
 export default struct My {
+  @StorageProp('token') token:string=''
   @Builder
   navBuilder($$: IColor) {
     NavBar($$)
   }
+
+
 
   @Builder
   contentBuilder() {
     Stack() {
       Bg()
       Column() {
+        // Button('点击').onClick((event:ClickEvent) => {
+        //   console.log(this.token)
+        // })
         UserInfo()
         TimePlan()
         Order()

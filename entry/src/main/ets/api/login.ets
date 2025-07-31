@@ -28,6 +28,7 @@ interface LoginResponse {
   token: string
 }
 
+
 export const loginApi = (phone: string, code: string): Promise<LoginResponse> => {
   const params: LoginRequest = { phone, code }
   return http.post<LoginResponse>('/login', params)
