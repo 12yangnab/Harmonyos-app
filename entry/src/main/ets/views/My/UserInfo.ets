@@ -6,6 +6,7 @@ import {IUserInfo} from '../../model/UserData'
 @Component
 export default struct UserInfo {
   @StorageProp('token') token: string = ''
+  @State isLoggingOut: boolean = false;
   @StorageProp('user') user: IUserInfo={
     id:0,
     nickname: '',
@@ -35,19 +36,35 @@ getUserInfo = async()=>{
         if (this.user.nickname) {
           Column({ space: rvp(4) }) {
             Text(this.user.nickname).fontSize(18).fontColor($r('app.color.white')).fontWeight(700)
-            Text('米粒点15').fontSize(14).fontColor($r('app.color.white'))
+            Text('米粒点1500').fontSize(14).fontColor($r('app.color.white'))
 
           }.alignItems(HorizontalAlign.Start)
           Row() {
-            Button('退出登录')
+            // 2. 替换原来的 Button
+            Button(this.isLoggingOut ? '退出中...' : '退出登录')
               .fontSize(14)
               .fontColor($r('app.color.white'))
-              .onClick(() => {
-                // 1. 清空本地缓存
+              .backgroundColor(
+                this.isLoggingOut
+                  ? $r('app.color.primary')   // 灰色，自己定义
+                  : $r('app.color.primary')
+              )
+              .enabled(!this.isLoggingOut)       // 禁用防止连点
+              .onClick(async () => {
+                if (this.isLoggingOut) return;
+                this.isLoggingOut = true;
+
+                // 1. 给出 1 秒左右“加载”时间（也可以换成真正的网络请求）
+                await new Promise<void>(resolve => setTimeout(resolve, 1000));
+
+
+                // 2. 真正退出
                 AppStorage.SetOrCreate('token', '');
                 AppStorage.SetOrCreate('user', { id: 0, nickname: '', avatar: '' });
-                // 2. 跳转到登录页
                 router.replaceUrl({ url: 'pages//My' });
+
+                // 3. 复原状态（非必须，页面会立即跳转）
+                this.isLoggingOut = false;
               })
           }
         }else {
