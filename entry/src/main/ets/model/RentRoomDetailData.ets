@@ -90,3 +90,9 @@ export interface IRentRoomDetail extends Omit<IRoomRecommendItem, 'housePicture'
 export interface IParams{
   id: string
 }
+
+export interface IFormatDate{
+  week: string;
+  date: string;
+}
+export type IFormatDateList = IFormatDate[]
