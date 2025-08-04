@@ -11,6 +11,7 @@ import createDateList from '../../utils/dataList'
 struct RentRoomDetail {
 @State dateList:IFormatDateList=createDateList()
   @State isShow: boolean = false
+  @State val:boolean=false
   @State currentDate:IFormatDate = this.dateList[0]
   @State isShowDataList:boolean=true
   @State reservationData:IReservationRoomParams={
@@ -20,7 +21,6 @@ struct RentRoomDetail {
     comment:'',
     houseId:''
   }
-
 
   //获取详情
 
@@ -158,18 +158,58 @@ aboutToAppear() {
           const data:IReservationRoomParams={
             name:this.reservationData.name,
             phone:this.reservationData.phone,
-            date:this.currentDate.date,
             comment:this.reservationData.comment,
+            date:this.currentDate.date,
             houseId:params.id
           }
-           await reservationRoomApi(data)
-          this.isShow=false
-         promptAction.showToast({
-           message:'预约成功',
-           duration:1000
-         })
-
+          if (!this.reservationData.name.trim()) {
+                  promptAction.showToast({ message: '请输入姓名' });
+                  return;
+                }
+                if (!this.reservationData.phone.trim()) {
+                  promptAction.showToast({ message: '请输入手机号' });
+                  return;
+                }
+                if (!/^\d{11}$/.test(this.reservationData.phone)) {
+                  promptAction.showToast({ message: '请输入11位有效手机号' });
+                  return;
+                }
+            reservationRoomApi(data)
+          this.isShow=false;
+           promptAction.showToast({ message:'预约成功' })
         })
+      // Button('预约看房')
+      //   .type(ButtonType.Normal)
+      //   .width('100%')
+      //   .backgroundColor('#24A178')
+      //   .onClick(async () => {
+      //     const params = router.getParams() as IParams;
+      //     const name = this.reservationData.name;
+      //     const phone = this.reservationData.phone;
+      //
+      //     if (!name.trim()) {
+      //       promptAction.showToast({ message: '请输入姓名' });
+      //       return;
+      //     }
+      //     if (!phone.trim()) {
+      //       promptAction.showToast({ message: '请输入手机号' });
+      //       return;
+      //     }
+      //     if (!/^\d{11}$/.test(phone)) {
+      //       promptAction.showToast({ message: '请输入11位有效手机号' });
+      //       return;
+      //     }
+      //     const data: IReservationRoomParams = {
+      //       name,
+      //       phone,
+      //       comment: this.reservationData.comment,
+      //       date: this.currentDate.date,
+      //       houseId: params.id
+      //     };
+      //       await reservationRoomApi(data);
+      //       this.isShow = false;
+      //       promptAction.showToast({ message: '预约成功' });
+      //   })
     }
 
   }.width('100%').height('100%').alignContent(Alignment.Bottom)
