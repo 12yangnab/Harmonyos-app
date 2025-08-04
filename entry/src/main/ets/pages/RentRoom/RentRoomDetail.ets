@@ -1,6 +1,6 @@
-import { getRoomDetailApi } from '../../api/rentRoomDetail'
-import { router } from '@kit.ArkUI'
-import { IFormatDate, IFormatDateList, IParams } from '../../model/RentRoomDetailData'
+import { getRoomDetailApi, reservationRoomApi } from '../../api/rentRoomDetail'
+import { promptAction, PromptAction, router } from '@kit.ArkUI'
+import { IFormatDate, IFormatDateList, IParams, IReservationRoomParams } from '../../model/RentRoomDetailData'
 import Drawer from '../../components/Drawer/Index'
 import { BORDER_RADIUS_S, PADDING } from '../../constans/size'
 import { rvp } from '../../utils/responsive'
@@ -13,6 +13,15 @@ struct RentRoomDetail {
   @State isShow: boolean = false
   @State currentDate:IFormatDate = this.dateList[0]
   @State isShowDataList:boolean=true
+  @State reservationData:IReservationRoomParams={
+    name:'',
+    phone:'',
+    date:'',
+    comment:'',
+    houseId:''
+  }
+
+
   //获取详情
 
 getRoomDetail =async () => {
@@ -67,10 +76,16 @@ aboutToAppear() {
         Row({space:rvp(16)}){
           Text('姓名').width(rvp(56)).fontSize(rvp(14))
           TextInput({placeholder:'请输入姓名'}).fontColor($r('app.color.black')).fontWeight(700) .layoutWeight(1)
+            .onChange((value)=>{
+              this.reservationData.name=value
+            })
         }.width('100%')
         Row({space:rvp(16)}){
           Text('手机号').width(rvp(56)).fontSize(rvp(14))
           TextInput({placeholder:'请输入手机号'}).fontColor($r('app.color.black')).fontWeight(700) .layoutWeight(1)
+            .onChange((value)=>{
+              this.reservationData.phone=value
+            })
         }.width('100%')
 
         Row({space:rvp(16)}){
@@ -130,11 +145,31 @@ aboutToAppear() {
             .layoutWeight(1).borderRadius(0)
             .maxLines(2)
             .height(rvp(60))
+            .onChange((value)=>{
+              this.reservationData.comment=value
+            })
         }.width('100%')
       }.width('100%').backgroundColor('#FFFFFF').padding(rvp(PADDING))
       .margin({top:rvp(16) ,bottom:rvp(16)})
 
       Button('预约看房').type(ButtonType.Normal).width('100%').backgroundColor('#24A178')
+        .onClick(async ()=>{
+          const params=router.getParams() as IParams
+          const data:IReservationRoomParams={
+            name:this.reservationData.name,
+            phone:this.reservationData.phone,
+            date:this.currentDate.date,
+            comment:this.reservationData.comment,
+            houseId:params.id
+          }
+           await reservationRoomApi(data)
+          this.isShow=false
+         promptAction.showToast({
+           message:'预约成功',
+           duration:1000
+         })
+
+        })
     }
 
   }.width('100%').height('100%').alignContent(Alignment.Bottom)
